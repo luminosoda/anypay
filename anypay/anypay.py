@@ -11,7 +11,7 @@ except ModuleNotFoundError:
 from hashlib import sha256
 
 # Typing
-from typing import Mapping, Optional, Union
+from typing import List, Mapping, Optional, Union
 
 # Constants
 from .const import *
@@ -84,3 +84,22 @@ class AnyPayAPI:
         commissions = response["result"]
 
         return AnyPayCommissions(**commissions)
+
+    async def payments(
+        self,
+        trans_id: Optional[int] = None,
+        pay_id: Optional[int] = None,
+        offset: Optional[int] = None,
+    ) -> List[AnyPayPayment]:
+        parameters = {
+            "project_id": self.project_id,
+            "trans_id": trans_id,
+            "pay_id": pay_id,
+            "offset": offset,
+            "sign": self._sign(f"payments{self.id}{self.project_id}{self.key}"),
+        }
+
+        response = await self._request("payments", params=parameters)
+        payments = response["result"]["payments"].values()
+
+        return [AnyPayPayment(**payment) for payment in payments]

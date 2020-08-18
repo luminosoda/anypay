@@ -1,8 +1,17 @@
 # Parsing models
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, EmailStr, Field
+
+# Enums
+from .enums import *
 
 
-__all__ = ("AnyPayRatesIn", "AnyPayRatesOut", "AnyPayRates", "AnyPayCommissions")
+__all__ = (
+    "AnyPayRatesIn",
+    "AnyPayRatesOut",
+    "AnyPayRates",
+    "AnyPayCommissions",
+    "AnyPayPayment",
+)
 
 
 class AnyPayRatesIn(BaseModel):
@@ -49,3 +58,16 @@ class AnyPayCommissions(BaseModel):
     bank: float = Field(..., alias="bank")
     contact: float = Field(..., alias="contact")
     unistream: float = Field(..., alias="unistream")
+
+
+class AnyPayPayment(BaseModel):
+    transaction_id: int
+    pay_id: int
+    status: AnyPayPaymentStatus
+    method: AnyPayPaymentMethod
+    amount: float
+    profit: float
+    email: EmailStr
+    desc: str
+    date: str
+    pay_date: str
