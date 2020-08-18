@@ -16,6 +16,9 @@ from typing import Mapping, Optional, Union
 # Constants
 from .const import *
 
+# Model
+from .models import *
+
 
 __all__ = ("AnyPayAPI",)
 
@@ -62,3 +65,11 @@ class AnyPayAPI:
         balance = response["result"]["balance"]
 
         return balance
+
+    async def rates(self) -> AnyPayRates:
+        parameters = {"sign": self._sign(f"rates{self.id}{self.key}")}
+
+        response = await self._request("rates", parameters)
+        rates = response["result"]
+
+        return AnyPayRates(**rates)
