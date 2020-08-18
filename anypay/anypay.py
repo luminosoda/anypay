@@ -7,6 +7,9 @@ try:
 except ModuleNotFoundError:
     from json import loads
 
+# SHA-256
+from hashlib import sha256
+
 # Typing
 from typing import Mapping, Optional
 
@@ -47,3 +50,7 @@ class AnyPayAPI:
             # The signature of the loads function from json doesn't match the signature from UJSON
             # noinspection PyTypeChecker
             return await response.json(loads=loads)
+
+    @staticmethod
+    def _sign(string: str):
+        return sha256(bytes(string.encode())).hexdigest()
