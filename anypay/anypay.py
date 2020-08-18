@@ -73,3 +73,14 @@ class AnyPayAPI:
         rates = response["result"]
 
         return AnyPayRates(**rates)
+
+    async def commissions(self) -> AnyPayCommissions:
+        parameters = {
+            "project_id": self.project_id,
+            "sign": self._sign(f"commissions{self.id}{self.project_id}{self.key}"),
+        }
+
+        response = await self._request("commissions", parameters)
+        commissions = response["result"]
+
+        return AnyPayCommissions(**commissions)
