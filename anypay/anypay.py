@@ -11,7 +11,7 @@ except ModuleNotFoundError:
 from hashlib import sha256
 
 # Typing
-from typing import Mapping, Optional
+from typing import Mapping, Optional, Union
 
 # Constants
 from .const import *
@@ -54,3 +54,11 @@ class AnyPayAPI:
     @staticmethod
     def _sign(string: str):
         return sha256(bytes(string.encode())).hexdigest()
+
+    async def balance(self) -> Union[float, int]:
+        parameters = {"sign": self._sign(f"balance{self.id}{self.key}")}
+
+        response = await self._request("balance", parameters)
+        balance = response["result"]["balance"]
+
+        return balance
