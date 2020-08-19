@@ -57,7 +57,7 @@ class AnyPayAPI:
         section: str,
         params: Optional[Mapping[str, Any]] = None,
         sign: Optional[str] = None,
-    ) -> dict:
+    ) -> Union[bool, dict, int, list, str, None]:
         params_clear = dict()
         for k, v in params.items():
             if v is not None:
@@ -77,27 +77,26 @@ class AnyPayAPI:
         ) as response:
             # The signature of the loads function from json doesn't match the signature from UJSON
             # noinspection PyTypeChecker
-            return await response.json(loads=loads)
+            response = await response.json(loads=loads)
+
+            return response["result"]
 
     async def balance(self) -> Union[float, int]:
         response = await self._request("balance")
-        balance = response["result"]["balance"]
 
-        return balance
+        return response
 
     async def rates(self) -> Rates:
         response = await self._request("rates")
-        rates = response["result"]
 
-        return Rates(**rates)
+        return Rates(**response)
 
     async def commissions(self) -> Commissions:
         parameters = {"project_id": self.project_id}
 
         response = await self._request("commissions", parameters, self.project_id)
-        commissions = response["result"]
 
-        return Commissions(**commissions)
+        return Commissions(**response)
 
     async def payments(
         self,
@@ -113,7 +112,7 @@ class AnyPayAPI:
         }
 
         response = await self._request("payments", parameters, self.project_id)
-        payments = response["result"]["payments"].values()
+        payments = response["payments"].values()
 
         return [Payment(**payment) for payment in payments]
 
@@ -144,9 +143,8 @@ class AnyPayAPI:
         sign = f"{payout_id}{payout_type}{amount}{wallet}"
 
         response = await self._request("create-payout", parameters, sign)
-        payout = response["result"]
 
-        return Payout(**payout)
+        return Payout(**response)
 
     async def payouts(
         self,
@@ -157,12 +155,12 @@ class AnyPayAPI:
         parameters = {"trans_id": trans_id, "payout_id": payout_id, "offset": offset}
 
         response = await self._request("payouts", parameters)
-        payouts = response["result"]["payouts"].values()
+        payouts = response["payouts"].values()
 
         return [Payout(**payout) for payout in payouts]
 
     async def ip_addresses(self) -> List[IPv4Address]:
         response = await self._request("ip-notification")
-        ip_addresses = response["result"]["ip"]
+        ip_addresses = response["ip"]
 
         return [IPv4Address(ip_address) for ip_address in ip_addresses]
