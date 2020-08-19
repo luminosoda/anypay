@@ -80,15 +80,15 @@ class AnyPayAPI:
 
         return balance
 
-    async def rates(self) -> AnyPayRates:
+    async def rates(self) -> Rates:
         parameters = {"sign": self._sign(f"rates{self.id}{self.key}")}
 
         response = await self._request("rates", parameters)
         rates = response["result"]
 
-        return AnyPayRates(**rates)
+        return Rates(**rates)
 
-    async def commissions(self) -> AnyPayCommissions:
+    async def commissions(self) -> Commissions:
         parameters = {
             "project_id": self.project_id,
             "sign": self._sign(f"commissions{self.id}{self.project_id}{self.key}"),
@@ -97,14 +97,14 @@ class AnyPayAPI:
         response = await self._request("commissions", parameters)
         commissions = response["result"]
 
-        return AnyPayCommissions(**commissions)
+        return Commissions(**commissions)
 
     async def payments(
         self,
         trans_id: Optional[int] = None,
         pay_id: Optional[int] = None,
         offset: Optional[int] = None,
-    ) -> List[AnyPayPayment]:
+    ) -> List[Payment]:
         parameters = {
             "project_id": self.project_id,
             "trans_id": trans_id,
@@ -116,24 +116,22 @@ class AnyPayAPI:
         response = await self._request("payments", params=parameters)
         payments = response["result"]["payments"].values()
 
-        return [AnyPayPayment(**payment) for payment in payments]
+        return [Payment(**payment) for payment in payments]
 
     async def create_payout(
         self,
         payout_id: int,
-        payout_type: Union[AnyPayPayoutType, str],
+        payout_type: Union[PayoutType, str],
         amount: float,
         wallet: str,
-        commission_type: Union[AnyPayPayoutCommissionType, str, None] = AnyPayPayoutCommissionType.PAYMENT,
-        currency: Union[AnyPayPayoutCurrency, str, None] = AnyPayPayoutCurrency.Ruble,
+        commission_type: Union[
+            PayoutCommissionType, str, None
+        ] = PayoutCommissionType.PAYMENT,
+        currency: Union[PayoutCurrency, str, None] = PayoutCurrency.Ruble,
         status_url: Union[URL, str, None] = None,
-    ) -> AnyPayPayout:
+    ) -> Payout:
         if isinstance(payout_type, Enum):
             payout_type = payout_type.value
-
-        sign = self._sign(
-            f"create-payout{self.id}{payout_id}{payout_type}{amount}{wallet}{self.key}"
-        )
 
         parameters = {
             "payout_id": payout_id,
@@ -142,21 +140,23 @@ class AnyPayAPI:
             "wallet": wallet,
             "commission_type": commission_type,
             "currency": currency,
-            "sign": sign,
             "status_url": status_url,
+            "sign": self._sign(
+                f"create-payout{self.id}{payout_id}{payout_type}{amount}{wallet}{self.key}"
+            ),
         }
 
         response = await self._request("create-payout", params=parameters)
         payout = response["result"]
 
-        return AnyPayPayout(**payout)
+        return Payout(**payout)
 
     async def payouts(
         self,
         trans_id: Optional[int] = None,
         payout_id: Optional[int] = None,
         offset: Optional[int] = None,
-    ) -> List[AnyPayPayout]:
+    ) -> List[Payout]:
         parameters = {
             "trans_id": trans_id,
             "payout_id": payout_id,
@@ -167,7 +167,7 @@ class AnyPayAPI:
         response = await self._request("payouts", params=parameters)
         payouts = response["result"]["payouts"].values()
 
-        return [AnyPayPayout(**payout) for payout in payouts]
+        return [Payout(**payout) for payout in payouts]
 
     async def ip_addresses(self) -> List[IPv4Address]:
         parameters = {"sign": self._sign(f"ip-notification{self.id}{self.key}")}

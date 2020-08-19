@@ -3,16 +3,16 @@ from enum import Enum
 
 
 __all__ = (
-    "AnyPayPaymentMethod",
-    "AnyPayPaymentStatus",
-    "AnyPayPayoutType",
-    "AnyPayPayoutStatus",
-    "AnyPayPayoutCommissionType",
-    "AnyPayPayoutCurrency",
+    "PaymentMethod",
+    "PaymentStatus",
+    "PayoutType",
+    "PayoutStatus",
+    "PayoutCommissionType",
+    "PayoutCurrency",
 )
 
 
-class AnyPayPaymentStatus(Enum):
+class PaymentStatus(Enum):
     PAID = "paid"
     WAITING = "waiting"
     REFUND = "refund"
@@ -21,7 +21,7 @@ class AnyPayPaymentStatus(Enum):
     ERROR = "error"
 
 
-class AnyPayPaymentMethod(Enum):
+class PaymentMethod(Enum):
     CARD = "card"
     APPLE_PAY = "applepay"
     GOOGLE_PAY = "googlepay"
@@ -47,7 +47,7 @@ class AnyPayPaymentMethod(Enum):
     UNISTREAM = "unistream"
 
 
-class AnyPayPayoutType(Enum):
+class PayoutType(Enum):
     QIWI = "qiwi"
     YANDEX_MONEY = "ym"
     WEBMONEY_DOLLAR = "wm"
@@ -55,18 +55,18 @@ class AnyPayPayoutType(Enum):
     CARD = "card"
 
 
-class AnyPayPayoutStatus(Enum):
+class PayoutStatus(Enum):
     PAID = "paid"
     IN_PROCESS = "in_process"
     CANCELED = "canceled"
     BLOCKED = "blocked"
 
 
-class AnyPayPayoutCommissionType(Enum):
+class PayoutCommissionType(Enum):
     PAYMENT = "payment"
     BALANCE = "balance"
 
 
-class AnyPayPayoutCurrency(Enum):
+class PayoutCurrency(Enum):
     Ruble = "rub"
     Hryvnia = "uah"

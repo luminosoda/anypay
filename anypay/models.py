@@ -6,16 +6,16 @@ from .enums import *
 
 
 __all__ = (
-    "AnyPayRatesIn",
-    "AnyPayRatesOut",
-    "AnyPayRates",
-    "AnyPayCommissions",
-    "AnyPayPayment",
-    "AnyPayPayout",
+    "RatesIn",
+    "RatesOut",
+    "Rates",
+    "Commissions",
+    "Payment",
+    "Payout",
 )
 
 
-class AnyPayRatesIn(BaseModel):
+class RatesIn(BaseModel):
     webmoney_dollar: float = Field(..., alias="wmz")
     dollar: float = Field(..., alias="usd")
     euro: float = Field(..., alias="eur")
@@ -25,17 +25,17 @@ class AnyPayRatesIn(BaseModel):
     zcash: float = Field(..., alias="zec")
 
 
-class AnyPayRatesOut(BaseModel):
+class RatesOut(BaseModel):
     webmoney_dollar: float = Field(..., alias="wmz")
     hryvnia: float = Field(..., alias="uah")
 
 
-class AnyPayRates(BaseModel):
-    incomes: AnyPayRatesIn = Field(..., alias="in")
-    outcomes: AnyPayRatesOut = Field(..., alias="out")
+class Rates(BaseModel):
+    incomes: RatesIn = Field(..., alias="in")
+    outcomes: RatesOut = Field(..., alias="out")
 
 
-class AnyPayCommissions(BaseModel):
+class Commissions(BaseModel):
     card: float = Field(..., alias="card")
     apple_pay: float = Field(..., alias="applepay")
     google_pay: float = Field(..., alias="googlepay")
@@ -61,11 +61,11 @@ class AnyPayCommissions(BaseModel):
     unistream: float = Field(..., alias="unistream")
 
 
-class AnyPayPayment(BaseModel):
+class Payment(BaseModel):
     transaction_id: int
     pay_id: int
-    status: AnyPayPaymentStatus
-    method: AnyPayPaymentMethod
+    status: PaymentStatus
+    method: PaymentMethod
     amount: float
     profit: float
     email: EmailStr
@@ -74,14 +74,14 @@ class AnyPayPayment(BaseModel):
     pay_date: str
 
 
-class AnyPayPayout(BaseModel):
+class Payout(BaseModel):
     transaction_id: int
     payout_id: int
-    payout_type: AnyPayPayoutType
-    status: AnyPayPayoutStatus
+    payout_type: PayoutType
+    status: PayoutStatus
     amount: float
     commission: float
-    commission_type: AnyPayPayoutCommissionType
+    commission_type: PayoutCommissionType
     rate: float
     wallet: str
     balance: float
