@@ -305,3 +305,6 @@ class AnyPay:
         ip_addresses = response["ip"]
 
         return [IPv4Address(ip_address) for ip_address in ip_addresses]
+
+    async def close(self):
+        await self._session.close()
