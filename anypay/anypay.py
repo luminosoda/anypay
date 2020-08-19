@@ -49,11 +49,11 @@ class AnyPayAPI:
         params_clear = dict()
         for k, v in params.items():
             if v is not None:
-                if v is float:
+                if isinstance(v, float):
                     v = str(v)
-                elif v is Enum:
+                elif isinstance(v, Enum):
                     v = v.value
-                elif v is URL:
+                elif isinstance(v, URL):
                     v = v.human_repr()
 
                 params_clear[k] = v
@@ -125,7 +125,7 @@ class AnyPayAPI:
         currency: Union[AnyPayPayoutCurrency, str, None] = AnyPayPayoutCurrency.Ruble,
         status_url: Union[URL, str, None] = None,
     ) -> AnyPayPayout:
-        if payout_type is Enum:
+        if isinstance(payout_type, Enum):
             payout_type = payout_type.value
 
         sign = self._sign(
