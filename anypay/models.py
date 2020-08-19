@@ -16,73 +16,74 @@ __all__ = (
 
 
 class RatesIn(BaseModel):
-    webmoney_dollar: float = Field(..., alias="wmz")
-    dollar: float = Field(..., alias="usd")
-    euro: float = Field(..., alias="eur")
-    bitcoin: float = Field(..., alias="btc")
-    litecoin: float = Field(..., alias="ltc")
-    dash: float = Field(..., alias="dash")
-    zcash: float = Field(..., alias="zec")
+    webmoney_dollar: float = Field(..., alias="wmz")  # Webmoney (WMZ).
+    dollar: float = Field(..., alias="usd")  # Dollar.
+    euro: float = Field(..., alias="eur")  # Euro.
+    bitcoin: float = Field(..., alias="btc")  # Bitcoin.
+    litecoin: float = Field(..., alias="ltc")  # Litecoin.
+    dash: float = Field(..., alias="dash")  # Dash.
+    zcash: float = Field(..., alias="zec")  # Zcash.
 
 
 class RatesOut(BaseModel):
-    webmoney_dollar: float = Field(..., alias="wmz")
-    hryvnia: float = Field(..., alias="uah")
+    webmoney_dollar: float = Field(..., alias="wmz")  # Webmoney (WMZ).
+    hryvnia: float = Field(..., alias="uah")  # Hryvnia.
 
 
 class Rates(BaseModel):
-    incomes: RatesIn = Field(..., alias="in")
-    outcomes: RatesOut = Field(..., alias="out")
+    incomes: RatesIn = Field(..., alias="in")  # For payments.
+    outcomes: RatesOut = Field(..., alias="out")  # For payouts.
 
 
 class Commissions(BaseModel):
-    card: float = Field(..., alias="card")
-    apple_pay: float = Field(..., alias="applepay")
-    google_pay: float = Field(..., alias="googlepay")
-    samsung_pay: float = Field(..., alias="samsungpay")
-    qiwi: float = Field(..., alias="qiwi")
-    yandex_money: float = Field(..., alias="ym")
-    webmoney: float = Field(..., alias="wm")
-    payeer: float = Field(..., alias="payeer")
-    bitcoin: float = Field(..., alias="btc")
-    litecoin: float = Field(..., alias="ltc")
-    dash: float = Field(..., alias="dash")
-    zcash: float = Field(..., alias="zec")
-    perfect_money: float = Field(..., alias="pm")
-    advcash: float = Field(..., alias="advcash")
-    exmo: float = Field(..., alias="exmo")
-    mts: float = Field(..., alias="mts")
-    beeline: float = Field(..., alias="beeline")
-    megafon: float = Field(..., alias="megafon")
-    tele2: float = Field(..., alias="tele2")
-    qiwi_terminals: float = Field(..., alias="term")
-    bank: float = Field(..., alias="bank")
-    contact: float = Field(..., alias="contact")
-    unistream: float = Field(..., alias="unistream")
+    """https://anypay.io/doc/sci/method-list"""
+    card: float = Field(..., alias="card")  # Visa/Mastercard/Mir.
+    apple_pay: float = Field(..., alias="applepay")  # Apple Pay.
+    google_pay: float = Field(..., alias="googlepay")  # Google Pay.
+    samsung_pay: float = Field(..., alias="samsungpay")  # Samsung Pay.
+    qiwi: float = Field(..., alias="qiwi")  # Qiwi Wallet.
+    yandex_money: float = Field(..., alias="ym")  # Yandex.Money.
+    webmoney: float = Field(..., alias="wm")  # Webmoney.
+    payeer: float = Field(..., alias="payeer")  # Payeer.
+    bitcoin: float = Field(..., alias="btc")  # Bitcoin.
+    litecoin: float = Field(..., alias="ltc")  # Litecoin.
+    dash: float = Field(..., alias="dash")  # Dash.
+    zcash: float = Field(..., alias="zec")  # Zcash.
+    perfect_money: float = Field(..., alias="pm")  # Perfect Money.
+    advcash: float = Field(..., alias="advcash")  # AdvCash.
+    exmo: float = Field(..., alias="exmo")  # Exmo.
+    mts: float = Field(..., alias="mts")  # MTS.
+    beeline: float = Field(..., alias="beeline")  # Beeline.
+    megafon: float = Field(..., alias="megafon")  # MegaFon.
+    tele2: float = Field(..., alias="tele2")  # Tele2.
+    qiwi_terminals: float = Field(..., alias="term")  # Qiwi terminals.
+    bank: float = Field(..., alias="bank")  # Bank transfer.
+    contact: float = Field(..., alias="contact")  # CONTACT.
+    unistream: float = Field(..., alias="unistream")  # Unistream.
 
 
 class Payment(BaseModel):
-    transaction_id: int
-    pay_id: int
-    status: PaymentStatus
-    method: PaymentMethod
-    amount: float
-    profit: float
-    email: EmailStr
-    desc: str
-    date: str
-    pay_date: str
+    transaction_id: int  # Unique payment ID in AnyPay system.
+    pay_id: int  # Unique payment ID in seller's system.
+    status: PaymentStatus  # Payment status.
+    method: PaymentMethod  # Payment system https://anypay.io/doc/sci/method-list.
+    amount: float  # Payment amount in rubles.
+    profit: float  # Amount to enrollment in rubles.
+    email: EmailStr  # Customer's mailbox.
+    desc: str  # Payment description.
+    date: str  # Datetime of payment creation.
+    pay_date: str  # Datetime of payment completion.
 
 
 class Payout(BaseModel):
-    transaction_id: int
-    payout_id: int
-    payout_type: PayoutType
-    status: PayoutStatus
-    amount: float
-    commission: float
-    commission_type: PayoutCommissionType
-    rate: float
-    wallet: str
-    date: str
-    complete_date: str
+    transaction_id: int  # Unique payout ID in AnyPay system.
+    payout_id: int  # Unique payout ID in seller's system.
+    payout_type: PayoutType  # Payment system.
+    status: PayoutStatus  # Status.
+    amount: float  # Payout amount in rubles.
+    commission: float  # Payout commission in rubles.
+    commission_type: PayoutCommissionType  # Payout commission type.
+    rate: float  # Conversion rate.
+    wallet: str  # Recipient wallet/mobile phone/card number.
+    date: str  # Datetime of payment creation.
+    complete_date: str  # Completion date of payment.

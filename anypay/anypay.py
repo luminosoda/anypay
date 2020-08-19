@@ -34,6 +34,8 @@ __all__ = ("AnyPayAPI",)
 
 
 class AnyPayAPI:
+    """Class to interact with AnyPay API: https://anypay.io/doc/api."""
+
     def __init__(
         self,
         id_: str,
@@ -48,16 +50,53 @@ class AnyPayAPI:
 
         self._session = ClientSession(headers={"Accept": "application/json"})
 
-    @staticmethod
-    def _sign(string: str):
-        return sha256(bytes(string.encode())).hexdigest()
+    def _sign(self, method: str, sign: Optional[str] = None) -> str:
+        """
+        Create sign for request with SHA-256.
+
+        Parameters
+        ----------
+        method : str
+            Method of the API.
+        sign : str
+            Sign without method, API_ID and API_KEY to be encoded.
+            Each full sign contains the same method as the request,
+            has ID and key, so we don't have to write them every time.
+            If the argument is None, there is nothing between ID and key.
+
+        Returns
+        -------
+        str
+            Sign.
+        """
+        if sign is None:
+            sign = ""
+
+        return sha256(bytes(f"{method}{self.id}{sign}{self.key}".encode())).hexdigest()
 
     async def _request(
         self,
-        section: str,
+        method: str,
         params: Optional[Mapping[str, Any]] = None,
         sign: Optional[str] = None,
     ) -> Union[bool, dict, int, list, str, None]:
+        """
+        Make request to AnyPay API.
+
+        Parameters
+        ----------
+        method : str
+            API method, in the URL it is next after https://anypay.io/api/.
+        params : Optional[Mapping[str, Any]]
+            Parameters for query string.
+        sign : Optional[str]
+            Sign without method, API_ID and API_KEY.
+
+        Returns
+        -------
+        dict
+            Response.
+        """
         params_clear = dict()
         for k, v in params.items():
             if v is not None:
@@ -70,28 +109,55 @@ class AnyPayAPI:
 
                 params_clear[k] = v
 
-        params_clear[sign] = self._sign(f"{section}{self.id}{sign}{self.key}")
+        params_clear["sign"] = self._sign(sign)
 
         async with await self._session.get(
-            f"{ANYPAY_API_URL}/{section}/{self.id}", params=params
+            f"{ANYPAY_API_URL}/{method}/{self.id}", params=params
         ) as response:
-            # The signature of the loads function from json doesn't match the signature from UJSON
+            # The signature of the loads function from json doesn't match the signature from UJSON.
             # noinspection PyTypeChecker
             response = await response.json(loads=loads)
 
             return response["result"]
 
-    async def balance(self) -> Union[float, int]:
+    async def balance(self) -> float:
+        """
+        Get profile balance.
+        https://anypay.io/doc/api.
+
+        Returns
+        -------
+        float
+            Balance in rubles.
+        """
         response = await self._request("balance")
 
         return response
 
     async def rates(self) -> Rates:
+        """
+        Get currency rates.
+        https://anypay.io/doc/api/rates.
+
+        Returns
+        -------
+        Commissions
+            pydantic model of currency rates.
+        """
         response = await self._request("rates")
 
         return Rates(**response)
 
     async def commissions(self) -> Commissions:
+        """
+        Get commissions for project.
+        https://anypay.io/doc/api/commissions.
+
+        Returns
+        -------
+        Commissions
+            pydantic model of commissions.
+        """
         parameters = {"project_id": self.project_id}
 
         response = await self._request("commissions", parameters, self.project_id)
@@ -102,8 +168,26 @@ class AnyPayAPI:
         self,
         trans_id: Optional[int] = None,
         pay_id: Optional[int] = None,
-        offset: Optional[int] = None,
+        offset: Optional[int] = 0,
     ) -> List[Payment]:
+        """
+        Get payments.
+        https://anypay.io/doc/api/payments.
+
+        Parameters
+        ----------
+        trans_id : int, optional
+            Unique payment ID in AnyPay system.
+        pay_id : int, optional
+            Unique payment ID in seller's system.
+        offset : int, optional
+            Offset required to select a specific subset of payments (default - 0).
+
+        Returns
+        -------
+        List[Payment]
+            List of payments as a pydantic models.
+        """
         parameters = {
             "project_id": self.project_id,
             "trans_id": trans_id,
@@ -122,12 +206,40 @@ class AnyPayAPI:
         payout_type: Union[PayoutType, str],
         amount: float,
         wallet: str,
+        currency: Union[PayoutCurrency, str, None] = PayoutCurrency.Ruble,
         commission_type: Union[
             PayoutCommissionType, str, None
         ] = PayoutCommissionType.PAYMENT,
-        currency: Union[PayoutCurrency, str, None] = PayoutCurrency.Ruble,
         status_url: Union[URL, str, None] = None,
     ) -> Payout:
+        """
+        Create payout.
+        https://anypay.io/doc/api/create-payout.
+
+        Parameters
+        ----------
+        payout_id : int, optional
+            Unique payout ID in seller's system.
+        payout_type : Union[PayoutType, str], optional
+            Payment system.
+        amount : float
+            Amount of payout in rubles.
+        wallet : str
+            Recipient wallet/mobile phone/card number.
+        currency : Union[PayoutCurrency, str], optional
+            The recipient's currency (bank cards).
+        commission_type : Union[PayoutCommissionType, str], optional
+            From what take the commission.
+        status_url : Union[URL, str], optional
+            URL to which GET-request will be sent when the payment
+            moves to final status.
+
+        Returns
+        -------
+        Payout
+            Created payout.
+        """
+        # Need to get the value right here because it will be used in sign.
         if isinstance(payout_type, Enum):
             payout_type = payout_type.value
 
@@ -152,6 +264,24 @@ class AnyPayAPI:
         payout_id: Optional[int] = None,
         offset: Optional[int] = None,
     ) -> List[Payout]:
+        """
+        Get payouts.
+        https://anypay.io/doc/api/payouts.
+
+        Parameters
+        ----------
+        trans_id : int, optional
+            Unique payout ID in AnyPay system.
+        payout_id : int, optional
+            Unique payout ID in seller's system.
+        offset : int, optional
+            Offset required to select a specific subset of payouts (default - 0).
+
+        Returns
+        -------
+        List[Payment]
+            List of payouts as a pydantic models.
+        """
         parameters = {"trans_id": trans_id, "payout_id": payout_id, "offset": offset}
 
         response = await self._request("payouts", parameters)
@@ -160,6 +290,15 @@ class AnyPayAPI:
         return [Payout(**payout) for payout in payouts]
 
     async def ip_addresses(self) -> List[IPv4Address]:
+        """
+        Get IP addresses of current trusted servers.
+        https://anypay.io/doc/api/ip.
+
+        Returns
+        -------
+        List[IPv4Address]
+            List of IPv4 addresses as ip_address.IPv4Address.
+        """
         response = await self._request("ip-notification")
         ip_addresses = response["ip"]
 
