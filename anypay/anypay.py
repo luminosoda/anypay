@@ -1,4 +1,4 @@
-# AIOHTTP
+# HTTP
 from aiohttp import ClientSession
 
 # JSON
@@ -13,12 +13,14 @@ from hashlib import sha256
 # Convert string to IP addresses
 from ipaddress import IPv4Address
 
+# Convert URL to string
+from yarl import URL
+
 # Check for enum
 from enum import Enum
 
 # Typing
 from typing import Any, List, Mapping, Optional, Union
-from yarl import URL
 
 # Constants
 from .const import *
@@ -30,10 +32,10 @@ from .enums import *
 from .models import *
 
 
-__all__ = ("AnyPayAPI",)
+__all__ = ("AnyPay",)
 
 
-class AnyPayAPI:
+class AnyPay:
     """Class to interact with AnyPay API: https://anypay.io/doc/api."""
 
     def __init__(
@@ -97,7 +99,7 @@ class AnyPayAPI:
         dict
             Response.
         """
-        params_clear = dict()
+        params_valid = dict()
         for k, v in params.items():
             if v is not None:
                 if isinstance(v, float):
@@ -107,9 +109,9 @@ class AnyPayAPI:
                 elif isinstance(v, URL):
                     v = v.human_repr()
 
-                params_clear[k] = v
+                params_valid[k] = v
 
-        params_clear["sign"] = self._sign(sign)
+        params_valid["sign"] = self._sign(sign)
 
         async with await self._session.get(
             f"{ANYPAY_API_URL}/{method}/{self.id}", params=params

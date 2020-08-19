@@ -23,6 +23,7 @@ class PaymentStatus(Enum):
 
 class PaymentMethod(Enum):
     """https://anypay.io/doc/sci/method-list"""
+
     CARD = "card"  # Visa/Mastercard/Mir.
     APPLE_PAY = "applepay"  # Apple Pay.
     GOOGLE_PAY = "googlepay"  # Google Pay.
@@ -58,7 +59,9 @@ class PayoutType(Enum):
 
 class PayoutStatus(Enum):
     PAID = "paid"  # Successful payout.
-    IN_PROCESS = "in_process"  # Payout has been sent to the payment system (temporary status).
+    IN_PROCESS = (
+        "in_process"  # Payout has been sent to the payment system (temporary status).
+    )
     CANCELED = "canceled"  # Payout is cancelled by the payment system, funds are returned to the balance.
     BLOCKED = "blocked"  # Payout is blocked by the monitoring system.
 

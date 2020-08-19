@@ -37,6 +37,7 @@ class Rates(BaseModel):
 
 class Commissions(BaseModel):
     """https://anypay.io/doc/sci/method-list"""
+
     card: float = Field(..., alias="card")  # Visa/Mastercard/Mir.
     apple_pay: float = Field(..., alias="applepay")  # Apple Pay.
     google_pay: float = Field(..., alias="googlepay")  # Google Pay.
