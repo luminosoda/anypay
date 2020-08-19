@@ -10,6 +10,9 @@ except ModuleNotFoundError:
 # SHA-256
 from hashlib import sha256
 
+# Convert string to IP addresses
+from ipaddress import IPv4Address
+
 # Check for enum
 from enum import Enum
 
@@ -165,3 +168,11 @@ class AnyPayAPI:
         payouts = response["result"]["payouts"].values()
 
         return [AnyPayPayout(**payout) for payout in payouts]
+
+    async def ip_addresses(self) -> List[IPv4Address]:
+        parameters = {"sign": self._sign(f"ip-notification{self.id}{self.key}")}
+
+        response = await self._request("ip-notification", params=parameters)
+        ip_addresses = response["result"]["ip"]
+
+        return [IPv4Address(ip_address) for ip_address in ip_addresses]
