@@ -45,7 +45,7 @@ class AnyPayAPI:
 
         self._session = ClientSession(headers={"Accept": "application/json"})
 
-    async def _request(self, section: str, params: Mapping[str, str]) -> dict:
+    async def _request(self, section: str, params: Mapping[str, Any]) -> dict:
         params_clear = dict()
         for k, v in params.items():
             if v is not None:
