@@ -7,8 +7,8 @@ try:
 except ModuleNotFoundError:
     from json import loads
 
-# SHA-256
-from hashlib import sha256
+# Hash
+from hashlib import sha256, md5
 
 # Convert string to IP addresses
 from ipaddress import IPv4Address
@@ -305,6 +305,49 @@ class AnyPay:
         ip_addresses = response["ip"]
 
         return [IPv4Address(ip_address) for ip_address in ip_addresses]
+
+    def create_link(
+        self,
+        pay_id: int,
+        amount: float,
+        currency: Union[PaymentCurrency, str, None] = PaymentCurrency.Ruble,
+        desc: Optional[str] = None,
+        email: Optional[str] = None,
+        phone: Optional[str] = None,
+        method: Union[PaymentMethod, str, None] = None,
+        lang: Union[PaymentPageLanguage, str, None] = PaymentPageLanguage.Russian,
+        **params,
+    ) -> URL:
+        if isinstance(currency, Enum):
+            currency = currency.value
+
+        params.update(
+            {
+                "merchant_id": self.project_id,
+                "pay_id": pay_id,
+                "amount": str(amount),
+                "currency": currency,
+                "desc": desc,
+                "email": email,
+                "phone": phone,
+                "method": method,
+                "lang": lang,
+            }
+        )
+
+        params_valid = dict()
+        for k, v in params.items():
+            if v is not None:
+                if isinstance(v, Enum):
+                    v = v.value
+
+                params_valid[k] = v
+
+        params_valid["sign"] = md5(
+            f"{currency}:{amount}:{self.secret}:{self.project_id}:{pay_id}".encode()
+        ).hexdigest()
+
+        return URL(ANYPAY_MERCHANT_URL) % params_valid
 
     async def close(self):
         await self._session.close()

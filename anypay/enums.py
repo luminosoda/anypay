@@ -9,6 +9,8 @@ __all__ = (
     "PayoutStatus",
     "PayoutCommissionType",
     "PayoutCurrency",
+    "PaymentCurrency",
+    "PaymentPageLanguage",
 )
 
 
@@ -74,3 +76,14 @@ class PayoutCommissionType(Enum):
 class PayoutCurrency(Enum):
     Ruble = "rub"  # Ruble.
     Hryvnia = "uah"  # Hryvnia.
+
+
+class PaymentCurrency(Enum):
+    Ruble = "rub"  # Ruble.
+    Dollar = "usd"  # Hryvnia.
+    Euro = "eur"  # Euro.
+
+
+class PaymentPageLanguage(Enum):
+    Russian = "ru"  # Russian.
+    English = "en"  # English.
