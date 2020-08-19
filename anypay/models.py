@@ -84,6 +84,5 @@ class Payout(BaseModel):
     commission_type: PayoutCommissionType
     rate: float
     wallet: str
-    balance: float
     date: str
     complete_date: str
