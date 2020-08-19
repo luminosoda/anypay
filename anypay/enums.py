@@ -5,6 +5,10 @@ from enum import Enum
 __all__ = (
     "AnyPayPaymentMethod",
     "AnyPayPaymentStatus",
+    "AnyPayPayoutType",
+    "AnyPayPayoutStatus",
+    "AnyPayPayoutCommissionType",
+    "AnyPayPayoutCurrency",
 )
 
 
@@ -41,3 +45,28 @@ class AnyPayPaymentMethod(Enum):
     BANK = "bank"
     CONTACT = "contact"
     UNISTREAM = "unistream"
+
+
+class AnyPayPayoutType(Enum):
+    QIWI = "qiwi"
+    YANDEX_MONEY = "ym"
+    WEBMONEY_DOLLAR = "wm"
+    MOBILE = "mc"
+    CARD = "card"
+
+
+class AnyPayPayoutStatus(Enum):
+    PAID = "paid"
+    IN_PROCESS = "in_process"
+    CANCELED = "canceled"
+    BLOCKED = "blocked"
+
+
+class AnyPayPayoutCommissionType(Enum):
+    PAYMENT = "payment"
+    BALANCE = "balance"
+
+
+class AnyPayPayoutCurrency(Enum):
+    Ruble = "rub"
+    Hryvnia = "uah"

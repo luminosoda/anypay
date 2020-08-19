@@ -11,6 +11,7 @@ __all__ = (
     "AnyPayRates",
     "AnyPayCommissions",
     "AnyPayPayment",
+    "AnyPayPayout",
 )
 
 
@@ -71,3 +72,18 @@ class AnyPayPayment(BaseModel):
     desc: str
     date: str
     pay_date: str
+
+
+class AnyPayPayout(BaseModel):
+    transaction_id: int
+    payout_id: int
+    payout_type: AnyPayPayoutType
+    status: AnyPayPayoutStatus
+    amount: float
+    commission: float
+    commission_type: AnyPayPayoutCommissionType
+    rate: float
+    wallet: str
+    balance: float
+    date: str
+    complete_date: str

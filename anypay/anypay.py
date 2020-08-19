@@ -10,13 +10,20 @@ except ModuleNotFoundError:
 # SHA-256
 from hashlib import sha256
 
+# Check for enum
+from enum import Enum
+
 # Typing
-from typing import List, Mapping, Optional, Union
+from typing import Any, List, Mapping, Optional, Union
+from yarl import URL
 
 # Constants
 from .const import *
 
-# Model
+# Enums
+from .enums import *
+
+# Models
 from .models import *
 
 
@@ -44,6 +51,10 @@ class AnyPayAPI:
             if v is not None:
                 if v is float:
                     v = str(v)
+                elif v is Enum:
+                    v = v.value
+                elif v is URL:
+                    v = v.human_repr()
 
                 params_clear[k] = v
 
@@ -103,3 +114,36 @@ class AnyPayAPI:
         payments = response["result"]["payments"].values()
 
         return [AnyPayPayment(**payment) for payment in payments]
+
+    async def create_payout(
+        self,
+        payout_id: int,
+        payout_type: Union[AnyPayPayoutType, str],
+        amount: float,
+        wallet: str,
+        commission_type: Union[AnyPayPayoutCommissionType, str, None] = AnyPayPayoutCommissionType.PAYMENT,
+        currency: Union[AnyPayPayoutCurrency, str, None] = AnyPayPayoutCurrency.Ruble,
+        status_url: Union[URL, str, None] = None,
+    ) -> AnyPayPayout:
+        if payout_type is Enum:
+            payout_type = payout_type.value
+
+        sign = self._sign(
+            f"create-payout{self.id}{payout_id}{payout_type}{amount}{wallet}{self.key}"
+        )
+
+        parameters = {
+            "payout_id": payout_id,
+            "payout_type": payout_type,
+            "amount": amount,
+            "wallet": wallet,
+            "commission_type": commission_type,
+            "currency": currency,
+            "sign": sign,
+            "status_url": status_url,
+        }
+
+        response = await self._request("create-payout", params=parameters)
+        payout = response["result"]
+
+        return AnyPayPayout(**payout)
