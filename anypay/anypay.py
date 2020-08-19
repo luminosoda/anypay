@@ -299,7 +299,7 @@ class AnyPay:
         Returns
         -------
         List[IPv4Address]
-            List of IPv4 addresses as ip_address.IPv4Address.
+            List of IPv4 addresses as ipaddress.IPv4Address.
         """
         response = await self._request("ip-notification")
         ip_addresses = response["ip"]
