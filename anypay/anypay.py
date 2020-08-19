@@ -48,7 +48,16 @@ class AnyPayAPI:
 
         self._session = ClientSession(headers={"Accept": "application/json"})
 
-    async def _request(self, section: str, params: Mapping[str, Any]) -> dict:
+    @staticmethod
+    def _sign(string: str):
+        return sha256(bytes(string.encode())).hexdigest()
+
+    async def _request(
+        self,
+        section: str,
+        params: Optional[Mapping[str, Any]] = None,
+        sign: Optional[str] = None,
+    ) -> dict:
         params_clear = dict()
         for k, v in params.items():
             if v is not None:
@@ -61,6 +70,8 @@ class AnyPayAPI:
 
                 params_clear[k] = v
 
+        params_clear[sign] = self._sign(f"{section}{self.id}{sign}{self.key}")
+
         async with await self._session.get(
             f"{ANYPAY_API_URL}/{section}/{self.id}", params=params
         ) as response:
@@ -68,33 +79,22 @@ class AnyPayAPI:
             # noinspection PyTypeChecker
             return await response.json(loads=loads)
 
-    @staticmethod
-    def _sign(string: str):
-        return sha256(bytes(string.encode())).hexdigest()
-
     async def balance(self) -> Union[float, int]:
-        parameters = {"sign": self._sign(f"balance{self.id}{self.key}")}
-
-        response = await self._request("balance", parameters)
+        response = await self._request("balance")
         balance = response["result"]["balance"]
 
         return balance
 
     async def rates(self) -> Rates:
-        parameters = {"sign": self._sign(f"rates{self.id}{self.key}")}
-
-        response = await self._request("rates", parameters)
+        response = await self._request("rates")
         rates = response["result"]
 
         return Rates(**rates)
 
     async def commissions(self) -> Commissions:
-        parameters = {
-            "project_id": self.project_id,
-            "sign": self._sign(f"commissions{self.id}{self.project_id}{self.key}"),
-        }
+        parameters = {"project_id": self.project_id}
 
-        response = await self._request("commissions", parameters)
+        response = await self._request("commissions", parameters, self.project_id)
         commissions = response["result"]
 
         return Commissions(**commissions)
@@ -110,10 +110,9 @@ class AnyPayAPI:
             "trans_id": trans_id,
             "pay_id": pay_id,
             "offset": offset,
-            "sign": self._sign(f"payments{self.id}{self.project_id}{self.key}"),
         }
 
-        response = await self._request("payments", params=parameters)
+        response = await self._request("payments", parameters, self.project_id)
         payments = response["result"]["payments"].values()
 
         return [Payment(**payment) for payment in payments]
@@ -141,12 +140,10 @@ class AnyPayAPI:
             "commission_type": commission_type,
             "currency": currency,
             "status_url": status_url,
-            "sign": self._sign(
-                f"create-payout{self.id}{payout_id}{payout_type}{amount}{wallet}{self.key}"
-            ),
         }
+        sign = f"{payout_id}{payout_type}{amount}{wallet}"
 
-        response = await self._request("create-payout", params=parameters)
+        response = await self._request("create-payout", parameters, sign)
         payout = response["result"]
 
         return Payout(**payout)
@@ -157,22 +154,15 @@ class AnyPayAPI:
         payout_id: Optional[int] = None,
         offset: Optional[int] = None,
     ) -> List[Payout]:
-        parameters = {
-            "trans_id": trans_id,
-            "payout_id": payout_id,
-            "offset": offset,
-            "sign": self._sign(f"payouts{self.id}{self.key}"),
-        }
+        parameters = {"trans_id": trans_id, "payout_id": payout_id, "offset": offset}
 
-        response = await self._request("payouts", params=parameters)
+        response = await self._request("payouts", parameters)
         payouts = response["result"]["payouts"].values()
 
         return [Payout(**payout) for payout in payouts]
 
     async def ip_addresses(self) -> List[IPv4Address]:
-        parameters = {"sign": self._sign(f"ip-notification{self.id}{self.key}")}
-
-        response = await self._request("ip-notification", params=parameters)
+        response = await self._request("ip-notification")
         ip_addresses = response["result"]["ip"]
 
         return [IPv4Address(ip_address) for ip_address in ip_addresses]
