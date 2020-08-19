@@ -147,3 +147,21 @@ class AnyPayAPI:
         payout = response["result"]
 
         return AnyPayPayout(**payout)
+
+    async def payouts(
+        self,
+        trans_id: Optional[int] = None,
+        payout_id: Optional[int] = None,
+        offset: Optional[int] = None,
+    ) -> List[AnyPayPayout]:
+        parameters = {
+            "trans_id": trans_id,
+            "payout_id": payout_id,
+            "offset": offset,
+            "sign": self._sign(f"payouts{self.id}{self.key}"),
+        }
+
+        response = await self._request("payouts", params=parameters)
+        payouts = response["result"]["payouts"].values()
+
+        return [AnyPayPayout(**payout) for payout in payouts]
