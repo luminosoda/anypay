@@ -74,16 +74,16 @@ class PayoutCommissionType(Enum):
 
 
 class PayoutCurrency(Enum):
-    Ruble = "rub"  # Ruble.
-    Hryvnia = "uah"  # Hryvnia.
+    RUBLE = "rub"  # Ruble.
+    HRYVNIA = "uah"  # Hryvnia.
 
 
 class PaymentCurrency(Enum):
-    Ruble = "rub"  # Ruble.
-    Dollar = "usd"  # Hryvnia.
-    Euro = "eur"  # Euro.
+    RUBLE = "rub"  # Ruble.
+    DOLLAR = "usd"  # Hryvnia.
+    EURO = "eur"  # Euro.
 
 
 class PaymentPageLanguage(Enum):
-    Russian = "ru"  # Russian.
-    English = "en"  # English.
+    RUSSIAN = "ru"  # Russian.
+    ENGLISH = "en"  # English.
