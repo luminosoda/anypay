@@ -112,7 +112,7 @@ class AnyPay:
 
                     params_valid[k] = v
 
-        params_valid["sign"] = self._sign(sign)
+        params_valid["sign"] = self._sign(method, sign)
 
         async with await self._session.get(
             f"{ANYPAY_API_URL}/{method}/{self.id}", params=params
