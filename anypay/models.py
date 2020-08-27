@@ -73,7 +73,7 @@ class Payment(BaseModel):
     email: EmailStr  # Customer's mailbox.
     desc: str  # Payment description.
     date: str  # Datetime of payment creation.
-    pay_date: str  # Datetime of payment completion.
+    pay_date: str = None  # Datetime of payment completion.
 
 
 class Payout(BaseModel):
@@ -87,4 +87,4 @@ class Payout(BaseModel):
     rate: float  # Conversion rate.
     wallet: str  # Recipient wallet/mobile phone/card number.
     date: str  # Datetime of payment creation.
-    complete_date: str  # Completion date of payment.
+    complete_date: str = None  # Completion date of payment.
