@@ -267,7 +267,7 @@ class AnyPay:
         self,
         trans_id: Optional[int] = None,
         payout_id: Optional[int] = None,
-        offset: Optional[int] = None,
+        offset: Optional[int] = 0,
     ) -> List[Payout]:
         """
         Get payouts.
