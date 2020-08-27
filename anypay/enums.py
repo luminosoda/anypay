@@ -5,12 +5,12 @@ from enum import Enum
 __all__ = (
     "PaymentMethod",
     "PaymentStatus",
-    "PayoutType",
+    "PayoutMethod",
     "PayoutStatus",
-    "PayoutCommissionType",
+    "CommissionType",
     "PayoutCurrency",
     "PaymentCurrency",
-    "PaymentPageLanguage",
+    "PageLanguage",
 )
 
 
@@ -51,7 +51,7 @@ class PaymentMethod(Enum):
     UNISTREAM = "unistream"  # Unistream.
 
 
-class PayoutType(Enum):
+class PayoutMethod(Enum):
     QIWI = "qiwi"  # Qiwi Wallet.
     YANDEX_MONEY = "ym"  # Yandex.Money.
     WEBMONEY_DOLLAR = "wm"  # Webmoney (WMZ).
@@ -68,7 +68,7 @@ class PayoutStatus(Enum):
     BLOCKED = "blocked"  # Payout is blocked by the monitoring system.
 
 
-class PayoutCommissionType(Enum):
+class CommissionType(Enum):
     PAYMENT = "payment"  # From the payment amount.
     BALANCE = "balance"  # From balance.
 
@@ -84,6 +84,6 @@ class PaymentCurrency(Enum):
     EURO = "EUR"  # Euro.
 
 
-class PaymentPageLanguage(Enum):
+class PageLanguage(Enum):
     RUSSIAN = "ru"  # Russian.
     ENGLISH = "en"  # English.

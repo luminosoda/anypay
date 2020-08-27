@@ -92,10 +92,10 @@ class Payment(BaseModel):
     Payment model.
     https://anypay.io/doc/api/payments.
     """
-    transaction_id: int  # Unique payment ID in AnyPay system.
-    pay_id: int  # Unique payment ID in seller's system.
+    id: int = Field(..., alias="pay_id")  # Unique payment ID in seller's system.
+    anypay_id: int = Field(..., alias="transaction_id")  # Unique payment ID in AnyPay system.
     status: PaymentStatus  # Status.
-    method: PaymentMethod  # Payment system https://anypay.io/doc/sci/method-list.
+    method: PaymentMethod  # Payment method https://anypay.io/doc/sci/method-list.
     amount: float  # Amount in rubles.
     profit: float  # Amount to enrollment in rubles.
     email: EmailStr  # Customer's email.
@@ -116,13 +116,13 @@ class Payout(BaseModel):
 
     https://anypay.io/doc/api/payments.
     """
-    transaction_id: int  # Unique payout ID in AnyPay system.
-    payout_id: int  # Unique payout ID in seller's system.
-    payout_type: PayoutType  # Payout system.
+    id: int = Field(..., alias="payout_id")  # Unique payout ID in seller's system.
+    anypay_id: int = Field(..., alias="transaction_id")  # Unique payout ID in AnyPay system.
+    method: PayoutMethod  # Payout method.
     status: PayoutStatus  # Status.
     amount: float  # Amount in rubles.
     commission: float  # Commission in rubles.
-    commission_type: PayoutCommissionType  # Commission type.
+    commission_type: CommissionType  # Commission type.
     rate: float  # Conversion rate.
     wallet: str  # Recipient wallet/mobile phone/card number.
     date: datetime  # Datetime of payout creation.

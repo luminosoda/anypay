@@ -170,8 +170,8 @@ class AnyPay:
 
     async def payments(
         self,
+        id_: Optional[int] = None,
         trans_id: Optional[int] = None,
-        pay_id: Optional[int] = None,
         offset: Optional[int] = 0,
     ) -> List[Payment]:
         """
@@ -182,7 +182,7 @@ class AnyPay:
         ----------
         trans_id : int, optional
             Unique payment ID in AnyPay system.
-        pay_id : int, optional
+        id_ : int, optional
             Unique payment ID in seller's system.
         offset : int, optional
             Offset required to select a specific subset of payments
@@ -196,7 +196,7 @@ class AnyPay:
         parameters = {
             "project_id": self.project_id,
             "trans_id": trans_id,
-            "pay_id": pay_id,
+            "pay_id": id_,
             "offset": offset,
         }
 
@@ -207,14 +207,14 @@ class AnyPay:
 
     async def create_payout(
         self,
-        payout_id: int,
-        payout_type: Union[PayoutType, str],
+        id_: int,
+        method: Union[PayoutMethod, str],
         amount: float,
         wallet: str,
         currency: Union[PayoutCurrency, str, None] = PayoutCurrency.RUBLE,
         commission_type: Union[
-            PayoutCommissionType, str, None
-        ] = PayoutCommissionType.PAYMENT,
+            CommissionType, str, None
+        ] = CommissionType.PAYMENT,
         status_url: Union[URL, str, None] = None,
     ) -> Payout:
         """
@@ -223,17 +223,17 @@ class AnyPay:
 
         Parameters
         ----------
-        payout_id : int, optional
+        id_ : int, optional
             Unique payout ID in seller's system.
-        payout_type : Union[PayoutType, str], optional
-            Payment system.
+        method : Union[PayoutMethod, str], optional
+            Payment method.
         amount : float
             Amount in rubles.
         wallet : str
             Recipient wallet/mobile phone/card number.
         currency : Union[PayoutCurrency, str], optional
             The recipient's currency (bank cards) (default - ruble).
-        commission_type : Union[PayoutCommissionType, str], optional
+        commission_type : Union[CommissionType, str], optional
             From what take the commission (default - from the payment amount).
         status_url : Union[URL, str], optional
             URL to which GET-request will be sent when the payment
@@ -245,19 +245,19 @@ class AnyPay:
             Created payout.
         """
         # Need to get the value right here because it will be used in sign.
-        if isinstance(payout_type, Enum):
-            payout_type = payout_type.value
+        if isinstance(method, Enum):
+            method = method.value
 
         parameters = {
-            "payout_id": payout_id,
-            "payout_type": payout_type,
+            "payout_id": id_,
+            "payout_type": method,
             "amount": amount,
             "wallet": wallet,
             "commission_type": commission_type,
             "currency": currency,
             "status_url": status_url,
         }
-        sign = f"{payout_id}{payout_type}{amount}{wallet}"
+        sign = f"{id_}{method}{amount}{wallet}"
 
         response = await self._request("create-payout", parameters, sign)
 
@@ -265,8 +265,8 @@ class AnyPay:
 
     async def payouts(
         self,
+        id_: Optional[int] = None,
         trans_id: Optional[int] = None,
-        payout_id: Optional[int] = None,
         offset: Optional[int] = 0,
     ) -> List[Payout]:
         """
@@ -277,7 +277,7 @@ class AnyPay:
         ----------
         trans_id : int, optional
             Unique payout ID in AnyPay system.
-        payout_id : int, optional
+        id_ : int, optional
             Unique payout ID in seller's system.
         offset : int, optional
             Offset required to select a specific subset of payouts
@@ -288,7 +288,7 @@ class AnyPay:
         List[Payment]
             List of payouts as a pydantic models.
         """
-        parameters = {"trans_id": trans_id, "payout_id": payout_id, "offset": offset}
+        parameters = {"trans_id": trans_id, "payout_id": id_, "offset": offset}
 
         response = await self._request("payouts", parameters)
         payouts = response["payouts"].values()
@@ -312,14 +312,14 @@ class AnyPay:
 
     def create_link(
         self,
-        pay_id: int,
+        id_: int,
         amount: float,
         currency: Union[PaymentCurrency, str, None] = PaymentCurrency.RUBLE,
         desc: Optional[str] = None,
         email: Optional[str] = None,
         phone: Optional[str] = None,
         method: Union[PaymentMethod, str, None] = None,
-        lang: Union[PaymentPageLanguage, str, None] = PaymentPageLanguage.RUSSIAN,
+        lang: Union[PageLanguage, str, None] = PageLanguage.RUSSIAN,
         **params,
     ) -> URL:
         """
@@ -328,7 +328,7 @@ class AnyPay:
 
         Parameters
         ----------
-        pay_id : int
+        id_ : int
             Unique payment ID in seller's system.
         amount : float
             Amount in rubles.
@@ -341,8 +341,8 @@ class AnyPay:
         phone : int, optional
             Customer's phone number.
         method : Union[PaymentMethod, str], optional
-            Payment system, https://anypay.io/doc/sci/method-list.
-        lang : Union[PaymentPageLanguage, str], optional
+            Payment method, https://anypay.io/doc/sci/method-list.
+        lang : Union[PageLanguage, str], optional
             Interface language of payment page (default - Russian).
         **params : Union[str, int, Enum], optional
             Additional seller's parameters, will be transfered to notification.
@@ -359,7 +359,7 @@ class AnyPay:
         params.update(
             {
                 "merchant_id": self.project_id,
-                "pay_id": pay_id,
+                "pay_id": id_,
                 "amount": str(amount),
                 "currency": currency,
                 "desc": desc,
@@ -379,7 +379,7 @@ class AnyPay:
                 params_valid[k] = v
 
         params_valid["sign"] = md5(
-            f"{currency}:{amount}:{self.secret}:{self.project_id}:{pay_id}".encode()
+            f"{currency}:{amount}:{self.secret}:{self.project_id}:{id_}".encode()
         ).hexdigest()
 
         return URL(ANYPAY_MERCHANT_URL) % params_valid
