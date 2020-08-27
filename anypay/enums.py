@@ -79,9 +79,9 @@ class PayoutCurrency(Enum):
 
 
 class PaymentCurrency(Enum):
-    RUBLE = "rub"  # Ruble.
-    DOLLAR = "usd"  # Dollar.
-    EURO = "eur"  # Euro.
+    RUBLE = "RUB"  # Ruble.
+    DOLLAR = "USD"  # Dollar.
+    EURO = "EUR"  # Euro.
 
 
 class PaymentPageLanguage(Enum):
