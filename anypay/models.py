@@ -25,6 +25,10 @@ __all__ = (
 
 
 class RatesIn(BaseModel):
+    """
+    Income currency rates.
+    https://anypay.io/doc/api/rates.
+    """
     webmoney_dollar: float = Field(..., alias="wmz")  # Webmoney (WMZ).
     dollar: float = Field(..., alias="usd")  # Dollar.
     euro: float = Field(..., alias="eur")  # Euro.
@@ -35,17 +39,28 @@ class RatesIn(BaseModel):
 
 
 class RatesOut(BaseModel):
+    """
+    Outcome currency rates.
+    https://anypay.io/doc/api/rates.
+    """
     webmoney_dollar: float = Field(..., alias="wmz")  # Webmoney (WMZ).
     hryvnia: float = Field(..., alias="uah")  # Hryvnia.
 
 
 class Rates(BaseModel):
+    """
+    Currency rates.
+    https://anypay.io/doc/api/rates.
+    """
     incomes: RatesIn = Field(..., alias="in")  # For payments.
     outcomes: RatesOut = Field(..., alias="out")  # For payouts.
 
 
 class Commissions(BaseModel):
-    """https://anypay.io/doc/sci/method-list"""
+    """
+    Payment system commission.
+    https://anypay.io/doc/sci/method-list.
+    """
 
     card: float  # Visa/Mastercard/Mir.
     apple_pay: float = Field(..., alias="applepay")  # Apple Pay.
@@ -73,18 +88,22 @@ class Commissions(BaseModel):
 
 
 class Payment(BaseModel):
+    """
+    Payment model.
+    https://anypay.io/doc/api/payments.
+    """
     transaction_id: int  # Unique payment ID in AnyPay system.
     pay_id: int  # Unique payment ID in seller's system.
-    status: PaymentStatus  # Payment status.
+    status: PaymentStatus  # Status.
     method: PaymentMethod  # Payment system https://anypay.io/doc/sci/method-list.
-    amount: float  # Payment amount in rubles.
+    amount: float  # Amount in rubles.
     profit: float  # Amount to enrollment in rubles.
-    email: EmailStr  # Customer's mailbox.
-    desc: str  # Payment description.
+    email: EmailStr  # Customer's email.
+    desc: str  # Description.
     date: datetime  # Datetime of payment creation.
     pay_date: Optional[datetime] = None  # Datetime of payment completion.
 
-    # pydantic's problems.
+    # pydantic problems.
     # noinspection PyMethodParameters
     @validator("date", "pay_date", pre=True)
     def _str_to_datetime(cls, v: str) -> datetime:
@@ -92,19 +111,24 @@ class Payment(BaseModel):
 
 
 class Payout(BaseModel):
+    """
+    Payout model.
+
+    https://anypay.io/doc/api/payments.
+    """
     transaction_id: int  # Unique payout ID in AnyPay system.
     payout_id: int  # Unique payout ID in seller's system.
-    payout_type: PayoutType  # Payment system.
+    payout_type: PayoutType  # Payout system.
     status: PayoutStatus  # Status.
-    amount: float  # Payout amount in rubles.
-    commission: float  # Payout commission in rubles.
-    commission_type: PayoutCommissionType  # Payout commission type.
+    amount: float  # Amount in rubles.
+    commission: float  # Commission in rubles.
+    commission_type: PayoutCommissionType  # Commission type.
     rate: float  # Conversion rate.
     wallet: str  # Recipient wallet/mobile phone/card number.
-    date: datetime  # Datetime of payment creation.
-    complete_date: Optional[datetime] = None  # Completion date of payment.
+    date: datetime  # Datetime of payout creation.
+    complete_date: Optional[datetime] = None  # Completion date of payout.
 
-    # pydantic's problems.
+    # pydantic problems.
     # noinspection PyMethodParameters
     @validator("date", "complete_date", pre=True)
     def _str_to_datetime(cls, v: str) -> datetime:

@@ -20,7 +20,7 @@ class PaymentStatus(Enum):
     REFUND = "refund"  # Refund to the customer.
     CANCELED = "canceled"  # The payment is cancelled.
     EXPIRED = "expired"  # Bill has expired.
-    ERROR = "error"  # payment error.
+    ERROR = "error"  # Payment error.
 
 
 class PaymentMethod(Enum):
@@ -80,7 +80,7 @@ class PayoutCurrency(Enum):
 
 class PaymentCurrency(Enum):
     RUBLE = "rub"  # Ruble.
-    DOLLAR = "usd"  # Hryvnia.
+    DOLLAR = "usd"  # Dollar.
     EURO = "eur"  # Euro.
 
 

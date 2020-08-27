@@ -117,7 +117,8 @@ class AnyPay:
         async with await self._session.get(
             f"{ANYPAY_API_URL}/{method}/{self.id}", params=params
         ) as response:
-            # The signature of the loads function from json doesn't match the signature from UJSON.
+            # The signature of the loads function from json doesn't match
+            # the signature from UJSON.
             # noinspection PyTypeChecker
             response = await response.json(loads=loads)
 
@@ -145,7 +146,7 @@ class AnyPay:
         Returns
         -------
         Commissions
-            pydantic model of currency rates.
+            Currency rates as pydantic model.
         """
         response = await self._request("rates")
 
@@ -159,7 +160,7 @@ class AnyPay:
         Returns
         -------
         Commissions
-            pydantic model of commissions.
+            Commissions as pydantic model.
         """
         parameters = {"project_id": self.project_id}
 
@@ -184,12 +185,13 @@ class AnyPay:
         pay_id : int, optional
             Unique payment ID in seller's system.
         offset : int, optional
-            Offset required to select a specific subset of payments (default - 0).
+            Offset required to select a specific subset of payments
+            (default - 0).
 
         Returns
         -------
         List[Payment]
-            List of payments as a pydantic models.
+            List of payments as pydantic models.
         """
         parameters = {
             "project_id": self.project_id,
@@ -226,16 +228,16 @@ class AnyPay:
         payout_type : Union[PayoutType, str], optional
             Payment system.
         amount : float
-            Amount of payout in rubles.
+            Amount in rubles.
         wallet : str
             Recipient wallet/mobile phone/card number.
         currency : Union[PayoutCurrency, str], optional
-            The recipient's currency (bank cards).
+            The recipient's currency (bank cards) (default - ruble).
         commission_type : Union[PayoutCommissionType, str], optional
-            From what take the commission.
+            From what take the commission (default - from the payment amount).
         status_url : Union[URL, str], optional
             URL to which GET-request will be sent when the payment
-            moves to final status.
+            goes to final status.
 
         Returns
         -------
@@ -278,7 +280,8 @@ class AnyPay:
         payout_id : int, optional
             Unique payout ID in seller's system.
         offset : int, optional
-            Offset required to select a specific subset of payouts (default - 0).
+            Offset required to select a specific subset of payouts
+            (default - 0).
 
         Returns
         -------
@@ -340,7 +343,7 @@ class AnyPay:
         method : Union[PaymentMethod, str], optional
             Payment system, https://anypay.io/doc/sci/method-list.
         lang : Union[PaymentPageLanguage, str], optional
-            Interface language of payment page.
+            Interface language of payment page (default - Russian).
         **params : Union[str, int, Enum], optional
             Additional seller's parameters, will be transfered to notification.
 
@@ -349,6 +352,7 @@ class AnyPay:
         URL
             Payment link as yarl.URL.
         """
+        # Need to get the value right here because it will be used in sign.
         if isinstance(currency, Enum):
             currency = currency.value
 
@@ -381,4 +385,5 @@ class AnyPay:
         return URL(ANYPAY_MERCHANT_URL) % params_valid
 
     async def close(self):
+        """Closes session."""
         await self._session.close()
