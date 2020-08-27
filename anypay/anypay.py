@@ -318,6 +318,36 @@ class AnyPay:
         lang: Union[PaymentPageLanguage, str, None] = PaymentPageLanguage.Russian,
         **params,
     ) -> URL:
+        """
+        Initialize payment and create link.
+        https://anypay.io/doc/sci.
+
+        Parameters
+        ----------
+        pay_id : int
+            Unique payment ID in seller's system.
+        amount : float
+            Amount in rubles.
+        currency : Union[PaymentCurrency, str], optional
+            Currency: RUB, USD, EUR (according to ISO 4217 standard).
+        desc : int, optional
+            Description (up to 150 symbols).
+        email : str, optional
+            Customer's email address.
+        phone : int, optional
+            Customer's phone number.
+        method : Union[PaymentMethod, str], optional
+            Payment system, https://anypay.io/doc/sci/method-list.
+        lang : Union[PaymentPageLanguage, str], optional
+            Interface language of payment page.
+        **params : Union[str, int, Enum], optional
+            Additional seller's parameters, will be transfered to notification.
+
+        Returns
+        -------
+        URL
+            Payment link as yarl.URL.
+        """
         if isinstance(currency, Enum):
             currency = currency.value
 
