@@ -1,5 +1,11 @@
 # Parsing models
-from pydantic import BaseModel, EmailStr, Field
+from pydantic import BaseModel, EmailStr, Field, validator
+
+# Parsing datetime
+from datetime import datetime
+
+# Constants
+from .const import ANYPAY_DATETIME_FORMAT
 
 # Enums
 from .enums import *
@@ -72,8 +78,14 @@ class Payment(BaseModel):
     profit: float  # Amount to enrollment in rubles.
     email: EmailStr  # Customer's mailbox.
     desc: str  # Payment description.
-    date: str  # Datetime of payment creation.
-    pay_date: str = None  # Datetime of payment completion.
+    date: datetime  # Datetime of payment creation.
+    pay_date: datetime = None  # Datetime of payment completion.
+
+    # pydantic's problems.
+    # noinspection PyMethodParameters
+    @validator("date", "pay_date", pre=True)
+    def _str_to_datetime(cls, v: str) -> datetime:
+        return datetime.strptime(v, ANYPAY_DATETIME_FORMAT)
 
 
 class Payout(BaseModel):
@@ -86,5 +98,11 @@ class Payout(BaseModel):
     commission_type: PayoutCommissionType  # Payout commission type.
     rate: float  # Conversion rate.
     wallet: str  # Recipient wallet/mobile phone/card number.
-    date: str  # Datetime of payment creation.
-    complete_date: str = None  # Completion date of payment.
+    date: datetime  # Datetime of payment creation.
+    complete_date: datetime = None  # Completion date of payment.
+
+    # pydantic's problems.
+    # noinspection PyMethodParameters
+    @validator("date", "complete_date", pre=True)
+    def _str_to_datetime(cls, v: str) -> datetime:
+        return datetime.strptime(v, ANYPAY_DATETIME_FORMAT)
