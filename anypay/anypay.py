@@ -100,16 +100,17 @@ class AnyPay:
             Response.
         """
         params_valid = dict()
-        for k, v in params.items():
-            if v is not None:
-                if isinstance(v, float):
-                    v = str(v)
-                elif isinstance(v, Enum):
-                    v = v.value
-                elif isinstance(v, URL):
-                    v = v.human_repr()
+        if params is not None:
+            for k, v in params.items():
+                if v is not None:
+                    if isinstance(v, float):
+                        v = str(v)
+                    elif isinstance(v, Enum):
+                        v = v.value
+                    elif isinstance(v, URL):
+                        v = v.human_repr()
 
-                params_valid[k] = v
+                    params_valid[k] = v
 
         params_valid["sign"] = self._sign(sign)
 
