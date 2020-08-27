@@ -81,7 +81,7 @@ class AnyPay:
         method: str,
         params: Optional[Mapping[str, Any]] = None,
         sign: Optional[str] = None,
-    ) -> Union[bool, dict, int, list, str, None]:
+    ) -> Union[bool, dict, int, float, list, str, None]:
         """
         Make request to AnyPay API.
 
