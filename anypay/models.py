@@ -21,7 +21,7 @@ class RatesIn(BaseModel):
     euro: float = Field(..., alias="eur")  # Euro.
     bitcoin: float = Field(..., alias="btc")  # Bitcoin.
     litecoin: float = Field(..., alias="ltc")  # Litecoin.
-    dash: float = Field(..., alias="dash")  # Dash.
+    dash: float  # Dash.
     zcash: float = Field(..., alias="zec")  # Zcash.
 
 
@@ -38,29 +38,29 @@ class Rates(BaseModel):
 class Commissions(BaseModel):
     """https://anypay.io/doc/sci/method-list"""
 
-    card: float = Field(..., alias="card")  # Visa/Mastercard/Mir.
+    card: float  # Visa/Mastercard/Mir.
     apple_pay: float = Field(..., alias="applepay")  # Apple Pay.
     google_pay: float = Field(..., alias="googlepay")  # Google Pay.
     samsung_pay: float = Field(..., alias="samsungpay")  # Samsung Pay.
-    qiwi: float = Field(..., alias="qiwi")  # Qiwi Wallet.
+    qiwi: float  # Qiwi Wallet.
     yandex_money: float = Field(..., alias="ym")  # Yandex.Money.
     webmoney: float = Field(..., alias="wm")  # Webmoney.
-    payeer: float = Field(..., alias="payeer")  # Payeer.
+    payeer: float  # Payeer.
     bitcoin: float = Field(..., alias="btc")  # Bitcoin.
     litecoin: float = Field(..., alias="ltc")  # Litecoin.
-    dash: float = Field(..., alias="dash")  # Dash.
+    dash: float  # Dash.
     zcash: float = Field(..., alias="zec")  # Zcash.
     perfect_money: float = Field(..., alias="pm")  # Perfect Money.
-    advcash: float = Field(..., alias="advcash")  # AdvCash.
-    exmo: float = Field(..., alias="exmo")  # Exmo.
-    mts: float = Field(..., alias="mts")  # MTS.
-    beeline: float = Field(..., alias="beeline")  # Beeline.
-    megafon: float = Field(..., alias="megafon")  # MegaFon.
-    tele2: float = Field(..., alias="tele2")  # Tele2.
+    advcash: float  # AdvCash.
+    exmo: float  # Exmo.
+    mts: float  # MTS.
+    beeline: float  # Beeline.
+    megafon: float  # MegaFon.
+    tele2: float  # Tele2.
     qiwi_terminals: float = Field(..., alias="term")  # Qiwi terminals.
-    bank: float = Field(..., alias="bank")  # Bank transfer.
-    contact: float = Field(..., alias="contact")  # CONTACT.
-    unistream: float = Field(..., alias="unistream")  # Unistream.
+    bank: float  # Bank transfer.
+    contact: float  # CONTACT.
+    unistream: float  # Unistream.
 
 
 class Payment(BaseModel):
