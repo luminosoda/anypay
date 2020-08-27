@@ -4,6 +4,9 @@ from pydantic import BaseModel, EmailStr, Field, validator
 # Parsing datetime
 from datetime import datetime
 
+# Typing
+from typing import Optional
+
 # Constants
 from .const import ANYPAY_DATETIME_FORMAT
 
@@ -79,7 +82,7 @@ class Payment(BaseModel):
     email: EmailStr  # Customer's mailbox.
     desc: str  # Payment description.
     date: datetime  # Datetime of payment creation.
-    pay_date: datetime = None  # Datetime of payment completion.
+    pay_date: Optional[datetime] = None  # Datetime of payment completion.
 
     # pydantic's problems.
     # noinspection PyMethodParameters
@@ -99,7 +102,7 @@ class Payout(BaseModel):
     rate: float  # Conversion rate.
     wallet: str  # Recipient wallet/mobile phone/card number.
     date: datetime  # Datetime of payment creation.
-    complete_date: datetime = None  # Completion date of payment.
+    complete_date: Optional[datetime] = None  # Completion date of payment.
 
     # pydantic's problems.
     # noinspection PyMethodParameters
