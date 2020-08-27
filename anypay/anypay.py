@@ -208,7 +208,7 @@ class AnyPay:
         payout_type: Union[PayoutType, str],
         amount: float,
         wallet: str,
-        currency: Union[PayoutCurrency, str, None] = PayoutCurrency.Ruble,
+        currency: Union[PayoutCurrency, str, None] = PayoutCurrency.RUBLE,
         commission_type: Union[
             PayoutCommissionType, str, None
         ] = PayoutCommissionType.PAYMENT,
@@ -310,12 +310,12 @@ class AnyPay:
         self,
         pay_id: int,
         amount: float,
-        currency: Union[PaymentCurrency, str, None] = PaymentCurrency.Ruble,
+        currency: Union[PaymentCurrency, str, None] = PaymentCurrency.RUBLE,
         desc: Optional[str] = None,
         email: Optional[str] = None,
         phone: Optional[str] = None,
         method: Union[PaymentMethod, str, None] = None,
-        lang: Union[PaymentPageLanguage, str, None] = PaymentPageLanguage.Russian,
+        lang: Union[PaymentPageLanguage, str, None] = PaymentPageLanguage.RUSSIAN,
         **params,
     ) -> URL:
         """
