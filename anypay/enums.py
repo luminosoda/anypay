@@ -80,6 +80,9 @@ class PayoutCurrency(Enum):
 
 class PaymentCurrency(Enum):
     RUBLE = "RUB"  # Ruble.
+    HRYVNIA = "UAH"  # Hryvnia.
+    BELARUSIAN_RUBLE = "BYN"  # Belarusian ruble.
+    TENGE = "KZT"  # Tenge.
     DOLLAR = "USD"  # Dollar.
     EURO = "EUR"  # Euro.
 

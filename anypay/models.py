@@ -29,6 +29,10 @@ class RatesIn(BaseModel):
     Income currency rates.
     https://anypay.io/doc/api/rates.
     """
+
+    hryvnia: float = Field(..., alias="uah")  # Hryvnia.
+    belarusian_ruble: float = Field(..., alias="byn")  # Belarusian ruble.
+    tenge: float = Field(..., alias="kzt")  # Tenge.
     webmoney_dollar: float = Field(..., alias="wmz")  # Webmoney (WMZ).
     dollar: float = Field(..., alias="usd")  # Dollar.
     euro: float = Field(..., alias="eur")  # Euro.
@@ -43,6 +47,7 @@ class RatesOut(BaseModel):
     Outcome currency rates.
     https://anypay.io/doc/api/rates.
     """
+
     webmoney_dollar: float = Field(..., alias="wmz")  # Webmoney (WMZ).
     hryvnia: float = Field(..., alias="uah")  # Hryvnia.
 
@@ -52,6 +57,7 @@ class Rates(BaseModel):
     Currency rates.
     https://anypay.io/doc/api/rates.
     """
+
     incomes: RatesIn = Field(..., alias="in")  # For payments.
     outcomes: RatesOut = Field(..., alias="out")  # For payouts.
 
@@ -92,8 +98,11 @@ class Payment(BaseModel):
     Payment model.
     https://anypay.io/doc/api/payments.
     """
+
     id: int = Field(..., alias="pay_id")  # Unique payment ID in seller's system.
-    anypay_id: int = Field(..., alias="transaction_id")  # Unique payment ID in AnyPay system.
+    anypay_id: int = Field(
+        ..., alias="transaction_id"
+    )  # Unique payment ID in AnyPay system.
     status: PaymentStatus  # Status.
     method: PaymentMethod  # Payment method https://anypay.io/doc/sci/method-list.
     amount: float  # Amount in rubles.
@@ -116,8 +125,11 @@ class Payout(BaseModel):
 
     https://anypay.io/doc/api/payments.
     """
+
     id: int = Field(..., alias="payout_id")  # Unique payout ID in seller's system.
-    anypay_id: int = Field(..., alias="transaction_id")  # Unique payout ID in AnyPay system.
+    anypay_id: int = Field(
+        ..., alias="transaction_id"
+    )  # Unique payout ID in AnyPay system.
     method: PayoutMethod  # Payout method.
     status: PayoutStatus  # Status.
     amount: float  # Amount in rubles.

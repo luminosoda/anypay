@@ -212,9 +212,7 @@ class AnyPay:
         amount: float,
         wallet: str,
         currency: Union[PayoutCurrency, str, None] = PayoutCurrency.RUBLE,
-        commission_type: Union[
-            CommissionType, str, None
-        ] = CommissionType.PAYMENT,
+        commission_type: Union[CommissionType, str, None] = CommissionType.PAYMENT,
         status_url: Union[URL, str, None] = None,
     ) -> Payout:
         """
